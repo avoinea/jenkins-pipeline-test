@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git(url: 'https://github.com/avoinea/jenkins-pipeline-test.git', branch: 'master')
+        git 'https://github.com/avoinea/jenkins-pipeline-test.git'
       }
     }
     stage('Tests') {

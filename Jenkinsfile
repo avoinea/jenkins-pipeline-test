@@ -6,14 +6,16 @@ pipeline {
         parallel(
           "WWW": {
             node(label: 'docker') {
-              sh 'docker run -i --net=host --rm eeacms/www:devel bash -c \'bin/develop up && bin/test -v -vv -s eea.alchemy\''
+              sh '''docker run --name="$BUILD_TAG" -i --net=host eeacms/www:devel bash -c 'bin/develop up && bin/test -v -vv -s eea.alchemy'
+docker rm -v "$BUILD_TAG"'''
             }
             
             
           },
           "Plone4": {
             node(label: 'docker') {
-              sh 'docker run -i --net=host --rm -e BUILDOUT_DEVELOP=src/eea.alchemy -e BUILDOUT_EGGS=eea.alchemy eeacms/plone-test bin/test -s eea.alchemy'
+              sh '''docker run -i --net=host --name="$BUILD_TAG" -e BUILDOUT_DEVELOP=src/eea.alchemy -e BUILDOUT_EGGS=eea.alchemy eeacms/plone-test bin/test -s eea.alchemy
+docker rm -v $BUILD_TAG'''
             }
             
             
@@ -21,10 +23,9 @@ pipeline {
           "Coverage": {
             node(label: 'docker') {
               sh '''mkdir -p xmltestreport
-setfacl  -R -m u:500:rwX xmltestreport
-setfacl -dR -m u:500:rwX xmltestreport
-getfacl xmltestreport
-docker run -i --net=host --rm -v $PWD/xmltestreport:/plone/instance/parts/xmltestreport eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+docker run -i --net=host --name=$BUILD_TAG eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+docker cp $BUILD_TAG:/plone/instance/parts/xmltestreport/testreports xmltestreport/
+docker rm -v $BUILD_TAG
 '''
               junit '**/xmltestreport/*.xml'
             }
@@ -40,6 +41,7 @@ docker run -i --net=host --rm -v $PWD/xmltestreport:/plone/instance/parts/xmltes
           git 'https://github.com/eea/eea.alchemy.git'
           sh '''echo "$pwd"
 echo "ls -al"
+echo "$BUILD_TAG"
 '''
         }
         

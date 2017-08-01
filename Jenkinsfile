@@ -21,9 +21,10 @@ pipeline {
           "Coverage": {
             node(label: 'docker') {
               sh '''mkdir -p xmltestreport
-setfacl  -R -m u:500:rwX xmltestreport/
-setfacl -dR -m u:500:rwX xmltestreport/
-docker run -i --net=host --rm -v $(pwd)/xmltestreport:/plone/instance/parts/xmltestreport eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+setfacl  -R -m u:500:rwX xmltestreport
+setfacl -dR -m u:500:rwX xmltestreport
+getfacl xmltestreport
+docker run -i --net=host --rm -v $PWD/xmltestreport:/plone/instance/parts/xmltestreport eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
 '''
               junit '**/xmltestreport/*.xml'
             }

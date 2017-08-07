@@ -30,7 +30,7 @@ docker run -i --net=host --name=$CONTAINER_NAME eeacms/www:devel bash -c "bin/co
 docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports/ xmltestreport/
 docker rm -v $CONTAINER_NAME
 '''
-              junit '**/xmltestreport/*.xml'
+              junit '**/xmltestreport/testreports/*.xml'
             }
             
             

@@ -25,9 +25,9 @@ docker rm -v $CONTAINER_NAME'''
           "Coverage": {
             node(label: 'docker') {
               sh '''mkdir -p xmltestreport
-chmod o+w xmltestreport
 CONTAINER_NAME="$BUILD_TAG-coverage"
-docker run -i --net=host --name=$CONTAINER_NAME -v $(pwd)/xmltestreport:/plone/instance/parts/xmltestreport eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+docker run -i --net=host --name=$CONTAINER_NAME eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports xmltestreport/
 docker rm -v $CONTAINER_NAME
 '''
               junit '**/xmltestreport/*.xml'

@@ -27,7 +27,7 @@ docker rm -v $CONTAINER_NAME'''
               sh '''mkdir -p xmltestreport
 CONTAINER_NAME="$BUILD_TAG-coverage"
 docker run -i --net=host --name=$CONTAINER_NAME eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
-docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports xmltestreport/
+docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports/ xmltestreport/
 docker rm -v $CONTAINER_NAME
 '''
               junit '**/xmltestreport/*.xml'

@@ -24,7 +24,7 @@ docker rm -v $CONTAINER_NAME'''
           },
           "Coverage": {
             node(label: 'docker') {
-              sh '''mkdir -p xmltestreport
+              sh '''mkdir -p xmltestreport/testreports
 CONTAINER_NAME="$BUILD_TAG-coverage"
 docker run -i --net=host --name=$CONTAINER_NAME eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
 docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports xmltestreport/

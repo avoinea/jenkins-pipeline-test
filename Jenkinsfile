@@ -16,7 +16,7 @@ docker rm -v $CONTAINER_NAME'''
           "Plone4": {
             node(label: 'docker') {
               sh '''CONTAINER_NAME="$BUILD_TAG-plone4"
-docker run -i --name=$CONTAINER_NAME --net=host -e BUILDOUT_DEVELOP=src/eea.alchemy -e BUILDOUT_EGGS=eea.alchemy eeacms/plone-test bin/test -s eea.alchemy
+docker run -i --name=$CONTAINER_NAME --net=host -v /plone/instance/parts -e BUILDOUT_DEVELOP=src/eea.alchemy -e BUILDOUT_EGGS=eea.alchemy eeacms/plone-test bin/test -s eea.alchemy
 docker rm -v $CONTAINER_NAME'''
             }
             
@@ -26,7 +26,7 @@ docker rm -v $CONTAINER_NAME'''
             node(label: 'docker') {
               sh '''mkdir -p xmltestreport
 CONTAINER_NAME="$BUILD_TAG-coverage"
-docker run -i --net=host --name=$CONTAINER_NAME eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
+docker run -i --net=host --name=$CONTAINER_NAME -v /plone/instance/parts/xmltestreport eeacms/www:devel bash -c "bin/coverage run bin/xmltestreport -s eea.alchemy && bin/report xml --include=*eea/alchemy*"
 docker cp $CONTAINER_NAME:/plone/instance/parts/xmltestreport/testreports/ xmltestreport/
 docker rm -v $CONTAINER_NAME
 '''
